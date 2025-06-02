@@ -1,7 +1,6 @@
 import NavBar from "./NavBar";
 import Home from "./Home";
 import About from "./About";
-import Vivencias from "./Vivencias";
 import { StarsBackground } from "../sub";
 import Footer from "./Footer";
 import Vivencias_v2 from "./Vivencias_v2";

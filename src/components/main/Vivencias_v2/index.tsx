@@ -1,5 +1,4 @@
 import { OBSERVACAO } from "@/assets/images"
-import { Cards } from "@/constants";
 
 export default function Vivencias_v2() {
     return (

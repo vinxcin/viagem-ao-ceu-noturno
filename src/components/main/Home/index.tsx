@@ -1,8 +1,6 @@
 import { BLACK_HOLE } from "@/assets/images"
 import { StarsBackground } from "@/components/sub";
 
-import { ChevronDown } from "lucide-react";
-
 export default function Home() {
     const scrollToSection = () => {
         const section = document.getElementById("about");
