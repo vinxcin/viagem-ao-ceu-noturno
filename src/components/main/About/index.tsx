@@ -14,6 +14,8 @@ export default function About() {
             key={i}
             src={img.src}
             alt={img.name}
+            loading="lazy"
+            decoding="async"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 0.35, y: 0 }}
             transition={{ delay: i * 0.2, duration: 1 }}

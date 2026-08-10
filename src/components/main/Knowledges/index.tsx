@@ -66,6 +66,8 @@ export default function Knowledges() {
                   <img
                     src={item.image}
                     alt={item.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-40 object-contain rounded-xl bg-[#1a1127] mb-3"
                   />
 

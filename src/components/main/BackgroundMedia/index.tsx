@@ -39,6 +39,7 @@ export default function BackgroundMedia({ isVisible }: Props) {
             muted
             loop
             playsInline
+            preload="metadata"
             className="fixed rotate-180 top-0 left-0 w-full h-full object-cover z-[-1] translate-y-[-43vh] lg:translate-y-[-40vh]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
