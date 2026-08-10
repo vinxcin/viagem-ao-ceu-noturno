@@ -75,6 +75,8 @@ export default function Experiences() {
                 <img
                   src={card.image}
                   alt={card.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-72 object-cover rounded-xl mb-2"
                 />
                 <h3 className="text-lg title md:text-xl text-[#050111] font-semibold mb-1 tracking-tight">
