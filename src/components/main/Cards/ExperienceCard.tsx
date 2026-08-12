@@ -1,7 +1,7 @@
-import type { ExperienceCardType } from '@/types';
+import type { CardItem } from '@/types';
 
 interface ExperienceCardProps {
-  data: ExperienceCardType;
+  data: CardItem;
 }
 
 export default function ExperienceCard({ data }: ExperienceCardProps) {
