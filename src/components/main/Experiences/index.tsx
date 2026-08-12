@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Cards } from "@/constants";
+import { Cards } from "@/types";
 
 export default function Experiences() {
   const [isDesktop, setIsDesktop] = useState(false);

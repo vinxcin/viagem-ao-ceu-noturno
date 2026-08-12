@@ -1,6 +1,6 @@
 'use client';
 
-import { Images } from '@/constants';
+import { Images } from '@/types';
 import { motion } from 'framer-motion';
 
 export default function About() {

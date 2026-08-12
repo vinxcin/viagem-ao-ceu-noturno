@@ -2,14 +2,16 @@
 module.exports = {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}", // garante que todos os seus arquivos React sejam processados
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Quicksand', 'sans-serif'], // para textos gerais
-        zen: ['Zen Dots', 'cursive'],      // para títulos
-      },
+        // 'space' vai ser a classe que você vai usar no código (font-space)
+        space: ['"Space Grotesk"', 'sans-serif'], 
+        // Você pode manter uma fonte padrão para os textos menores
+        sans: ['Inter', 'sans-serif'], 
+      }
     },
   },
   plugins: [],

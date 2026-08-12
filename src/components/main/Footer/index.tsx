@@ -86,7 +86,7 @@ export default function Footer() {
         className="mt-4 pb-2 text-center text-[12px] md:text-sm text-gray-400"
       >
         <div className="relative mb-2 top-0 left-0 w-full h-[0.8px] bg-gray-700" />
-        ©2025 Viagem ao Céu Noturno • Feito com 💜 sob as estrelas
+        ©2026 Viagem ao Céu Noturno • Feito com 💜 sob as estrelas
       </motion.footer>
     </footer>
   );

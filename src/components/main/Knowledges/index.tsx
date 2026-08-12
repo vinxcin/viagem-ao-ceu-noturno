@@ -3,7 +3,7 @@ import { Autoplay, Pagination } from 'swiper/modules';
 
 import { motion } from 'framer-motion';
 
-import { KnowledgesCard } from '@/constants';
+import { KnowledgesCard } from '@/types';
 import { Award, Atom, ArrowRight, BookOpen } from 'lucide-react';
 
 

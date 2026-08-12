@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavBarItens } from "@/constants";
+import { NavBarItens } from "@/types";
 import { Menu, X, Instagram } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LOGO_NAV_BAR } from "@/assets/img";
@@ -10,25 +10,28 @@ export default function NavBar() {
   const closeMenu = () => setMenuOpened(false);
 
   return (
-    <nav className="w-full h-[65px] fixed top-0 shadow-lg shadow-[#2A0E61]/50 bg-[#03001417] backdrop-blur-md z-50">
-      <div className="w-full h-full flex flex-row items-center justify-between m-auto px-[16px] md:px-12">
+    <nav className="w-full h-[70px] fixed top-0 shadow-lg shadow-[#2A0E61]/40 bg-[#03001420] backdrop-blur-md z-50 transition-all duration-300">
+      <div className="w-full h-full max-w-7xl flex flex-row items-center justify-between mx-auto px-4 md:px-12">
+        
+        {/* Logo */}
         <a href="#home" className="group h-auto w-auto flex flex-row items-center">
           <img
             src={LOGO_NAV_BAR}
-            alt="LOGO_NAV_BAR"
-            width={40}
-            height={40}
-            className="cursor-pointer  "
+            alt="Logo NavBar"
+            width={42}
+            height={42}
+            className="cursor-pointer transition-transform duration-300 group-hover:scale-105"
           />
         </a>
 
-        <div className="hidden md:flex md:w-[600px] lg:w-[620px] h-full flex-row items-center justify-between">
-          <div className="flex items-center justify-between w-full h-auto border border-[#7042f861] bg-[#03001490] mr-[15px] px-[20px] py-[10px] rounded-full text-gray-200">
+        {/* Desktop Menu Center */}
+        <div className="hidden md:flex flex-row items-center justify-between">
+          <div className="flex items-center justify-center gap-8 h-auto border border-[#7042f861] bg-[#03001490] px-8 py-2.5 rounded-full text-gray-200 shadow-inner shadow-[#7042f820]">
             {NavBarItens.map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
-                className="font-medium cursor-pointer hover:text-[#fd9a0c]"
+                className="font-medium text-sm lg:text-base cursor-pointer transition-colors duration-200 hover:text-[#fd9a0c]"
               >
                 {item.name}
               </a>
@@ -36,15 +39,23 @@ export default function NavBar() {
           </div>
         </div>
 
-        <div className="hidden md:flex flex-row gap-5">
-          <a className="cursor-pointer text-white hover:text-[#7042f8f4]" href={"https://www.instagram.com/viagemaoceunoturno/"} target="_blank" rel="noreferrer">
-            <Instagram />
+        {/* Desktop Social Icon */}
+        <div className="hidden md:flex flex-row items-center gap-5">
+          <a 
+            className="w-10 h-10 flex items-center justify-center rounded-full border border-[#7042f861] bg-[#03001490] text-white hover:text-[#fd9a0c] hover:border-[#fd9a0c] transition-all duration-300" 
+            href="https://www.instagram.com/viagemaoceunoturno/" 
+            target="_blank" 
+            rel="noreferrer"
+            aria-label="Instagram"
+          >
+            <Instagram size={20} />
           </a>
         </div>
 
+        {/* Mobile Menu Button */}
         <button
           onClick={toggleMenu}
-          className="md:hidden text-gray-300 z-50"
+          className="md:hidden text-gray-300 hover:text-white transition-colors z-50 p-1"
           aria-label="Menu"
           aria-expanded={menuOpened}
           aria-controls="mobile-menu"
@@ -53,6 +64,7 @@ export default function NavBar() {
         </button>
       </div>
 
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {menuOpened && (
           <motion.div
@@ -60,19 +72,33 @@ export default function NavBar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden flex flex-col items-center gap-16 h-[100vh] pt-20 bg-[#09031d] "
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden fixed inset-0 top-[70px] flex flex-col items-center justify-center gap-8 h-[calc(100vh-70px)] bg-[#030014f8] backdrop-blur-xl z-40 px-6 pb-12"
           >
             {NavBarItens.map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
                 onClick={closeMenu}
-                className="text-gray-200 text-2xl hover:text-purple-400 transition-all duration-300"
+                className="text-gray-200 text-2xl font-medium hover:text-[#fd9a0c] transition-colors duration-300"
               >
                 {item.name}
               </a>
             ))}
+
+            <div className="w-12 h-[1px] bg-[#7042f861] my-2" />
+
+            {/* Instagram Link no Mobile */}
+            <a 
+              className="flex items-center gap-3 text-gray-200 text-lg hover:text-[#fd9a0c] transition-colors duration-300" 
+              href="https://www.instagram.com/viagemaoceunoturno/" 
+              target="_blank" 
+              rel="noreferrer"
+              onClick={closeMenu}
+            >
+              <Instagram size={22} />
+              <span>Instagram</span>
+            </a>
           </motion.div>
         )}
       </AnimatePresence>

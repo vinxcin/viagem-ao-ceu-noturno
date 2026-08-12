@@ -1,12 +1,15 @@
+import { lazy, Suspense } from "react";
 import { useInView } from "react-intersection-observer";
+import NavBar from "./NavBar";
 import Hero from "./Hero";
 import BackgroundMedia from "./BackgroundMedia";
-import NavBar from "./NavBar";
-import About from "./About";
-import Experiences from "./Experiences";
 import BackgroundStars from "./BackgroundStars";
-import Knowledges from "./Knowledges";
-import Contact from "./Footer";
+
+// Componentes abaixo da dobra carregados sob demanda (Lazy Loading)
+const About = lazy(() => import("./About"));
+const Experiences = lazy(() => import("./Experiences"));
+const Knowledges = lazy(() => import("./Knowledges"));
+const Contact = lazy(() => import("./Footer"));
 
 export default function LandingPage() {
   const { ref: heroRef, inView: isHeroVisible } = useInView({
@@ -19,7 +22,7 @@ export default function LandingPage() {
 
       <div className="fixed top-0 left-0 w-full h-full bg-black/40 z-0" />
        
-      <BackgroundStars amount={200} />
+      <BackgroundStars />
 
       <NavBar />
 
@@ -27,10 +30,20 @@ export default function LandingPage() {
         <section ref={heroRef}>
           <Hero />
         </section>
-        <About />
-        <Experiences/>
-        <Knowledges/>
-        <Contact/>
+
+        {/* Suspense gerencia o estado de carregamento das seções lazy */}
+        <Suspense 
+          fallback={
+            <div className="w-full py-20 flex items-center justify-center text-white/50 text-sm tracking-widest animate-pulse">
+              CARREGANDO...
+            </div>
+          }
+        >
+          <About />
+          <Experiences />
+          <Knowledges />
+          <Contact />
+        </Suspense>
       </main>
     </div>
   );
