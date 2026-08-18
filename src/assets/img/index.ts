@@ -10,6 +10,12 @@ import CERT_NOITE_ESTRELAS_IMG from './cert_noite_com_as_estrelas_img.webp'
 import ARTIGO_REVISTA_EXITUS from './artigo_revista_exitus.webp'
 import APRES_ESCOLA_CARLOTA from './apresentacao_escola_carlota.webp'
 import ARTIGO_REVISTA_RBECM from './artigo_revista_rbecm.webp'
+import GLOBO_PLASMA from './globo_plasma.jpg'
+import TELESCOPIO from './telescopio.png'
+import INTERVENSAO_ASTRO from './intervencao_astronomica.webp'
+import SOL from './astrofoto_sol.jpeg'
+import LUA from './lua.jpg'
 
 
-export { LOGO_NAV_BAR, ARTIGO_REVISTA_RBECM, APRES_ESCOLA_CARLOTA, CERT_MCTI_IMG, ARTIGO_REVISTA_EXITUS, BURACOS_NEGROS, OBSERVACAO, BG_BLACK_HOLE, CONST_SARG, RUPESTRE_SOL, MINICURSO_ASTRO, CERT_NOITE_ESTRELAS_IMG };
+
+export { LOGO_NAV_BAR, ARTIGO_REVISTA_RBECM, APRES_ESCOLA_CARLOTA, CERT_MCTI_IMG, ARTIGO_REVISTA_EXITUS, BURACOS_NEGROS, OBSERVACAO, BG_BLACK_HOLE, CONST_SARG, RUPESTRE_SOL, MINICURSO_ASTRO, CERT_NOITE_ESTRELAS_IMG, GLOBO_PLASMA, TELESCOPIO, INTERVENSAO_ASTRO, SOL, LUA };

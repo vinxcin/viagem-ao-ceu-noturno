@@ -2,9 +2,18 @@ import {
   RUPESTRE_SOL, ARTIGO_REVISTA_RBECM, ARTIGO_REVISTA_EXITUS, 
   APRES_ESCOLA_CARLOTA, CONST_SARG, OBSERVACAO, 
   BURACOS_NEGROS, CERT_MCTI_IMG, MINICURSO_ASTRO, 
-  CERT_NOITE_ESTRELAS_IMG 
+  CERT_NOITE_ESTRELAS_IMG, GLOBO_PLASMA, TELESCOPIO, LUA, SOL
 } from '@/assets/img';
 import { CERT_MCTI, CERT_NOITE_ESTRELAS } from '@/assets/file';
+import {
+  Sparkles,
+  Telescope,
+  Zap,
+  Camera,
+  Music,
+  Flame,
+  type LucideIcon,
+} from 'lucide-react';
 
 // ==========================================
 // 1. DEFINIÇÃO DAS TIPAGENS
@@ -13,6 +22,15 @@ import { CERT_MCTI, CERT_NOITE_ESTRELAS } from '@/assets/file';
 export interface NavBarItem {
   name: string;
   id: string;
+}
+
+export interface VivenciasItem {
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  icon: LucideIcon;
+  tag: string;
 }
 
 export interface AboutImage {
@@ -67,6 +85,67 @@ export const Cards: CardItem[] = [
     description: 'Você sabia que as estrelas também nascem, vivem e morrem? Nessa vivência, vamos descobrir como elas se formam, o que acontece quando explodem, e como surgem os fascinantes buracos negros.',
   },
 ];
+
+
+export const astroPhotos = [
+    {
+      url: "/assets/img/astrofotografia.jpg", // Imagem padrão que já estava no card
+      exif: "ISO 1600 • 30s • f/2.8 • 18mm"
+    },
+    {
+      url: SOL, // Substitua por outra foto de astrofotografia do projeto
+      exif: "ISO 3200 • 60s • f/4.0 • 50mm"
+    },
+    {
+      url: LUA, // Substitua por outra foto de astrofotografia do projeto
+      exif: "ISO 800 • 15s • f/2.0 • 24mm"
+    }
+  ];
+
+
+  // Dados atualizados de vivências e intervenções
+  export const VivenciasCards: VivenciasItem[] = [
+    {
+      title: "Observação Astronômica",
+      subtitle: "Telescópio de Alta Precisão",
+      description: "O núcleo da experiência. Aparelhos apontados para os astros onde cada participante tem a oportunidade de contemplar crateras lunares, anéis de Saturno, nebulosas e estrelas distantes com os próprios olhos.",
+      image: TELESCOPIO,
+      icon: Telescope,
+      tag: "Ciência & Visão"
+    },
+    {
+      title: "Intervenção na Pista",
+      subtitle: "Psicodelia Astronômica • Pulsar Festival",
+      description: "Uma experiência pioneira onde levamos a observação astronômica direto para a pista de dança em festivais. A fusão perfeita entre a energia do som psicodélico, a imersão visual e a contemplação do Cosmos sem precisar sair de cena.",
+      image: "/assets/img/intervencao-pista.jpg",
+      icon: Flame,
+      tag: "Destaque •  Alternativa"
+    },
+    {
+      title: "Globo de Plasma",
+      subtitle: "Energia e Eletricidade em Suas Mãos",
+      description: "Uma instalação interativa e sensorial que atrai curiosos de todas as idades. O globo de plasma demonstra fenômenos físicos fascinantes através de filamentos luminosos que reagem ao toque humano.",
+      image: GLOBO_PLASMA,
+      icon: Zap,
+      tag: "Interativo & Científico"
+    },
+    {
+      title: "Astrofotografias Autorais",
+      subtitle: "Registros do Céu Profundo",
+      description: "Exposição de imagens capturadas pelas lentes do próprio projeto, revelando nebulosas, galáxias e rastros estelares com seus respectivos dados técnicos (EXIF), unindo rigor fotográfico e arte estelar.",
+      image: "/assets/img/astrofotografia.jpg",
+      icon: Camera,
+      tag: "Galeria de Arte"
+    },
+    {
+      title: "Playlist Oficial do Projeto",
+      subtitle: "Trilha Sonora Imersiva & Contemplativa",
+      description: "Para além do visual, preparamos uma experiência auditiva completa. Uma seleção musical pensada para acompanhar momentos de expansão da consciência, relaxamento e conexão profunda com o Universo.",
+      image: OBSERVACAO,
+      icon: Music,
+      tag: "Experiência Sonora"
+    }
+  ];
 
 export const KnowledgesCard: KnowledgeCardItem[] = [
   {

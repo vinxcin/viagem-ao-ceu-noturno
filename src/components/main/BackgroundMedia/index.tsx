@@ -20,36 +20,40 @@ export default function BackgroundMedia({ isVisible }: Props) {
   }, []);
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence>
       {isVisible && (
-        isMobile ? (
-          <motion.img
-            key="img"
-            src={BG_BLACK_HOLE}
-            className="fixed rotate-180 top-0 left-0 w-full h-full object-cover z-[-1] translate-y-[-28.7vh] sm:translate-y-[-29vh]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.8 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.5 }}
-          />
-        ) : (
-          <motion.video
-            key="video"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            className="fixed rotate-180 top-0 left-0 w-full h-full object-cover z-[-1] translate-y-[-43vh] lg:translate-y-[-40vh]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.5 }}
-          >
-            <source src="/videos/blackhole.webm" type="video/webm" />
-            Seu navegador não suporta vídeos em background.
-          </motion.video>
-        )
+        <div className="fixed inset-0 w-full h-full pointer-events-none z-[-1] overflow-hidden bg-[#030014]/70 backdrop-blur-[8px]">
+          {isMobile ? (
+            <motion.img
+              key="img-bh"
+              src={BG_BLACK_HOLE}
+              className="w-full h-full object-cover opacity-80"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.8 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+            />
+          ) : (
+            <motion.video
+              key="video-bh"
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover opacity-90 filter brightness-95"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.9 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              onError={(e) => console.error("Erro ao carregar o vídeo do buraco negro:", e)}
+            >
+
+              {/* Teste alterando para o caminho exato onde o arquivo está na sua pasta public */}
+              <source src="/videos/blackhole.webm" type="video/webm" />
+              Seu navegador não suporta vídeos em background.
+            </motion.video>
+          )}
+        </div>
       )}
     </AnimatePresence>
   );

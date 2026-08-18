@@ -3,13 +3,12 @@
 @import 'swiper/css/navigation';
 @import 'swiper/css/pagination';
 
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Zen+Dots&display=swap');
+
 :root {
   font-family: 'Quicksand', sans-serif;
-
-  /* color-scheme: light dark; */
-  /* color: rgba(255, 255, 255, 0.87); */
-  background-color: #050111;
-
+  background-color: #07040d;
+  color: #E2D9C8;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -25,13 +24,27 @@
   font-family: 'Quicksand', sans-serif;
 }
 
-::-webkit-scrollbar{width: 0.6vw; height: .6vh; background: #0b021d}
-::-webkit-scrollbar-thumb{background: linear-gradient(to bottom, #0b021d, #7a3bfc); border-radius: 5px;}
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+  background: #030014;
+}
 
-*::selection  {
-  background: #6429d168;
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #07040d, #7042f8);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+*::selection {
+  background: #7042f868;
 } 
 
+/* Animações originais mantidas */
 @keyframes twinkle {
   0%, 100% { opacity: 0.2; }
   50% { opacity: 1; }
