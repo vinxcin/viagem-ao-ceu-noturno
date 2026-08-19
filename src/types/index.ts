@@ -2,7 +2,7 @@ import {
   RUPESTRE_SOL, ARTIGO_REVISTA_RBECM, ARTIGO_REVISTA_EXITUS, 
   APRES_ESCOLA_CARLOTA, CONST_SARG, OBSERVACAO, 
   BURACOS_NEGROS, CERT_MCTI_IMG, MINICURSO_ASTRO, 
-  CERT_NOITE_ESTRELAS_IMG, GLOBO_PLASMA, TELESCOPIO, LUA, SOL
+  CERT_NOITE_ESTRELAS_IMG, GLOBO_PLASMA, TELESCOPIO, LUA, PICO_GAVIAO, MORRAO, BORBOREMA, SOL
 } from '@/assets/img';
 import { CERT_MCTI, CERT_NOITE_ESTRELAS } from '@/assets/file';
 import {
@@ -89,16 +89,24 @@ export const Cards: CardItem[] = [
 
 export const astroPhotos = [
     {
-      url: "/assets/img/astrofotografia.jpg", // Imagem padrão que já estava no card
-      exif: "ISO 1600 • 30s • f/2.8 • 18mm"
-    },
-    {
-      url: SOL, // Substitua por outra foto de astrofotografia do projeto
-      exif: "ISO 3200 • 60s • f/4.0 • 50mm"
+      url: PICO_GAVIAO, // Imagem padrão que já estava no card
+      exif: "ISO 1600 • 30s • f/2 • 35mm"
     },
     {
       url: LUA, // Substitua por outra foto de astrofotografia do projeto
       exif: "ISO 800 • 15s • f/2.0 • 24mm"
+    },
+    {
+      url: BORBOREMA, // Substitua por outra foto de astrofotografia do projeto
+      exif: "ISO 1600 • 30s • f/1.8 • 24mm"
+    },
+    {
+      url: MORRAO, // Substitua por outra foto de astrofotografia do projeto
+      exif: "ISO 64 • 1/99s • f/2.8 • 120mm"
+    },
+    {
+      url: SOL, // Substitua por outra foto de astrofotografia do projeto
+      exif: "ISO 64 • 1/99s • f/2.8 • 120mm"
     }
   ];
 
@@ -124,15 +132,15 @@ export const astroPhotos = [
     {
       title: "Globo de Plasma",
       subtitle: "Energia e Eletricidade em Suas Mãos",
-      description: "Uma instalação interativa e sensorial que atrai curiosos de todas as idades. O globo de plasma demonstra fenômenos físicos fascinantes através de filamentos luminosos que reagem ao toque humano.",
-      image: GLOBO_PLASMA,
+      description: "Mais do que uma atração visual, é um material educativo e sensorial que cativa todas as idades. O globo demonstra fenômenos físicos fascinantes ao permitir a interação tátil com o plasma, o quarto estado da matéria. Através dos filamentos luminosos que reagem ao toque, criamos uma analogia brilhante e em miniatura de como funciona o nosso próprio Sol!",
+      image: GLOBO_PLASMA, // ou o caminho da sua imagem
       icon: Zap,
       tag: "Interativo & Científico"
     },
     {
       title: "Astrofotografias Autorais",
       subtitle: "Registros do Céu Profundo",
-      description: "Exposição de imagens capturadas pelas lentes do próprio projeto, revelando nebulosas, galáxias e rastros estelares com seus respectivos dados técnicos (EXIF), unindo rigor fotográfico e arte estelar.",
+      description: "Através da nossa Rota das Estrelas, fotografamos os céus mais limpos do Brasil. Trazemos em nossas vivências de observação, a exposição dos registros autorais capturados, revelando a beleza de nebulosas, galáxias, planetas e crateras lunares.",
       image: "/assets/img/astrofotografia.jpg",
       icon: Camera,
       tag: "Galeria de Arte"
@@ -140,7 +148,7 @@ export const astroPhotos = [
     {
       title: "Playlist Oficial do Projeto",
       subtitle: "Trilha Sonora Imersiva & Contemplativa",
-      description: "Para além do visual, preparamos uma experiência auditiva completa. Uma seleção musical pensada para acompanhar momentos de expansão da consciência, relaxamento e conexão profunda com o Universo.",
+      description: "Para além do visual, preparamos uma experiência sonora completa. Uma seleção musical pensada para acompanhar momentos de expansão da consciência, relaxamento e conexão profunda com o Universo.",
       image: OBSERVACAO,
       icon: Music,
       tag: "Experiência Sonora"

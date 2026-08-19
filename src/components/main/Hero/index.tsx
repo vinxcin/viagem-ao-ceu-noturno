@@ -1,4 +1,4 @@
-import { ChevronDown, Sparkles, Compass, Telescope, ArrowRight } from "lucide-react";
+import { ChevronDown, Compass, Telescope, ArrowRight } from "lucide-react";
 
 export default function Hero() {
   const scrollToSection = (id: string = "sobre") => {
@@ -31,7 +31,7 @@ export default function Hero() {
       </div>
 
       {/* 2. Header Superior Flutuante (Otimizado para Mobile) */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <div className="hidden md:flex relative z-10 w-full max-w-7xl mx-auto items-center justify-between gap-2">
         <div className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-950/20 backdrop-blur-md">
           <Telescope className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400 shrink-0" />
           <span className="text-[10px] sm:text-xs font-mono tracking-widest uppercase text-cyan-200 truncate">
@@ -48,7 +48,7 @@ export default function Hero() {
       {/* 3. Conteúdo Central Cósmico (Espaçamento e Layout Responsivo) */}
       <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto my-auto space-y-6 sm:space-y-8 py-6">
         
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#d4af37]/30 bg-amber-950/20 backdrop-blur-md text-amber-200 text-[11px] sm:text-xs font-mono tracking-widest uppercase shadow-lg">
+        <div className=" hidden md:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#d4af37]/30 bg-amber-950/20 backdrop-blur-md text-amber-200 text-[11px] sm:text-xs font-mono tracking-widest uppercase shadow-lg">
           <span>Ciência • Arte • Cultura Alternativa</span>
         </div>
 
@@ -70,7 +70,7 @@ export default function Hero() {
           <em className="text-cyan-300 font-normal italic underline decoration-cyan-400/40 underline-offset-4">
             plantar a semente do senso de pertencimento ao Cosmos
           </em>{" "}
-          em uma experiência imersiva de contemplação.
+          em uma experiência imersiva de contemplação!
         </p>
 
         {/* Botões de Ação 100% Responsivos */}
@@ -80,7 +80,6 @@ export default function Hero() {
             className="w-full sm:w-auto px-7 py-3.5 sm:py-4 rounded-full bg-gradient-to-r from-cyan-500 to-[#7a3bfc] hover:from-cyan-400 hover:to-[#8b5cf6] text-white font-medium text-xs sm:text-sm tracking-widest uppercase transition-all duration-300 shadow-[0_0_25px_rgba(122,59,252,0.4)] flex items-center justify-center gap-2 group cursor-pointer"
           >
             <span>Explorar Vivências</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </button>
 
           <button

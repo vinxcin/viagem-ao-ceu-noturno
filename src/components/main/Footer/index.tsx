@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function Footer() {
   return (
-    <footer id="contato" className="bg-[#050111] text-white pt-8 mt-16 px-6 md:px-12">
+    <footer id="contato" className=" text-white pt-8 mt-16 px-6 md:px-12">
       <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 text-center md:text-left">
         
         {/* PROJETO */}
@@ -15,7 +15,7 @@ export default function Footer() {
           <h3 className="title text-xl mb-4 text-amber-50">Projeto</h3>
           <p className="text-sm text-gray-300 leading-relaxed">
             <strong>Viagem ao Céu Noturno</strong><br />
-            Educação, arte e cultura alternativa<br />
+            Ciência, arte e cultura alternativa<br />
             Desde 2019 🌌
           </p>
         </motion.div>
@@ -40,7 +40,7 @@ export default function Footer() {
             </li>
             <li className="flex items-center justify-center md:justify-start gap-2 hover:text-cyan-300 transition">
               <Mail size={20} />
-              <a href="mailto:contato@ceunoturno.com">contato@ceunoturno.com</a>
+              <a href="mailto:epifaniavida@gmail.com">epifaniavida@gmail.com</a>
             </li>
             <li className="flex items-center justify-center md:justify-start gap-2 hover:text-cyan-300 transition">
               <Phone size={20} />

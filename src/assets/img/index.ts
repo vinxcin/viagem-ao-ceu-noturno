@@ -13,9 +13,11 @@ import ARTIGO_REVISTA_RBECM from './artigo_revista_rbecm.webp'
 import GLOBO_PLASMA from './globo_plasma.jpg'
 import TELESCOPIO from './telescopio.png'
 import INTERVENSAO_ASTRO from './intervencao_astronomica.webp'
-import SOL from './astrofoto_sol.jpeg'
-import LUA from './lua.jpg'
+import SOL from './sol.webp'
+import LUA from './lua.jpeg'
+import PICO_GAVIAO from './pico_do_gaviao_capao.webp'
+import MORRAO from './morrao.jpeg'
+import BORBOREMA from './borborema.jpeg'
 
 
-
-export { LOGO_NAV_BAR, ARTIGO_REVISTA_RBECM, APRES_ESCOLA_CARLOTA, CERT_MCTI_IMG, ARTIGO_REVISTA_EXITUS, BURACOS_NEGROS, OBSERVACAO, BG_BLACK_HOLE, CONST_SARG, RUPESTRE_SOL, MINICURSO_ASTRO, CERT_NOITE_ESTRELAS_IMG, GLOBO_PLASMA, TELESCOPIO, INTERVENSAO_ASTRO, SOL, LUA };
+export { LOGO_NAV_BAR, ARTIGO_REVISTA_RBECM, APRES_ESCOLA_CARLOTA, CERT_MCTI_IMG, ARTIGO_REVISTA_EXITUS, BURACOS_NEGROS, OBSERVACAO, BG_BLACK_HOLE, CONST_SARG, RUPESTRE_SOL, MINICURSO_ASTRO, CERT_NOITE_ESTRELAS_IMG, GLOBO_PLASMA, TELESCOPIO, INTERVENSAO_ASTRO, SOL, LUA, PICO_GAVIAO, MORRAO, BORBOREMA};
