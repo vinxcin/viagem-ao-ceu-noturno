@@ -14,7 +14,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative flex flex-col justify-between sm:h-[80vh] md:min-h-screen w-full px-4 sm:px-8 md:px-16 lg:px-24 pt-28 pb-8 sm:py-20 overflow-hidden bg-[#030014] text-[#E2D9C8]"
+      className="relative flex flex-col justify-between sm:h-[85vh] md:min-h-screen w-full px-4 sm:px-8 md:px-16 lg:px-24 pt-28 pb-8 sm:py-20 overflow-hidden bg-[#030014] text-[#E2D9C8]"
     >
       {/* 1. Nebula Background & Vídeo Cósmico (Cyan para Roxo) */}
       <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
