@@ -142,7 +142,7 @@ export const VivenciasCards: VivenciasItem[] = [
     description: "Uma experiência pioneira onde levamos a observação astronômica direto para a pista de dança em festivais. A fusão perfeita entre a energia do som psicodélico, a imersão visual e a contemplação do Cosmos sem precisar sair da pista. Um convite para lembrar que fazemos parte de algo muito maior!",
     image: "/assets/img/intervencao-pista.jpg",
     icon: Flame,
-    tag: "Destaque • Intervenção Astronomica"
+    tag: "Destaque"
   },
   {
     title: "Globo de Plasma",
