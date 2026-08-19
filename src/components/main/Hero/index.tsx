@@ -1,4 +1,4 @@
-import { ChevronDown, Compass, Telescope, ArrowRight } from "lucide-react";
+import { ChevronDown, Compass, Telescope } from "lucide-react";
 
 export default function Hero() {
   const scrollToSection = (id: string = "sobre") => {

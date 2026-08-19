@@ -7,7 +7,6 @@ import {
 } from '@/assets/img';
 import { CERT_MCTI, CERT_NOITE_ESTRELAS } from '@/assets/file';
 import {
-  Sparkles,
   Telescope,
   Zap,
   Camera,
@@ -132,18 +131,18 @@ export const VivenciasCards: VivenciasItem[] = [
   {
     title: "Observação Astronômica",
     subtitle: "Telescópio de Alta Precisão",
-    description: "O núcleo da experiência. Aparelhos apontados para os astros onde cada participante tem a oportunidade de contemplar crateras lunares, anéis de Saturno, nebulosas e estrelas distantes com os próprios olhos.",
+    description: "O coração da nossa vivência é a observação do céu noturno. Através das lentes do telescópio, convidamos cada participante a uma jornada particular: contemplar de perto as crateras lunares, os anéis de Saturno, Júpiter e suas luas, nebulosas e estrelas distantes com os próprios olhos.",
     image: TELESCOPIO,
     icon: Telescope,
-    tag: "Ciência & Visão"
+    tag: "Ciência & CosmoVisão"
   },
   {
     title: "Intervenção na Pista",
     subtitle: "Psicodelia Astronômica • Pulsar Festival",
-    description: "Uma experiência pioneira onde levamos a observação astronômica direto para a pista de dança em festivais. A fusão perfeita entre a energia do som psicodélico, a imersão visual e a contemplação do Cosmos sem precisar sair de cena.",
+    description: "Uma experiência pioneira onde levamos a observação astronômica direto para a pista de dança em festivais. A fusão perfeita entre a energia do som psicodélico, a imersão visual e a contemplação do Cosmos sem precisar sair da pista. Um convite para lembrar que fazemos parte de algo muito maior!",
     image: "/assets/img/intervencao-pista.jpg",
     icon: Flame,
-    tag: "Destaque • Cultura Alternativa"
+    tag: "Destaque • Intervenção Astronomica"
   },
   {
     title: "Globo de Plasma",
@@ -175,7 +174,7 @@ export const VivenciasCards: VivenciasItem[] = [
     description: "Como um projeto itinerante e independente, nossa jornada ganha vida através de quem acredita no nosso propósito. Em nossa lojinha, oferecemos piteiras de vidro exclusivas com temática do universo e camisetas customizadas artesanalmente. Cada peça adquirida fortalece nossa missão e nos ajuda a custear e manter a alta qualidade dos equipamentos utilizados em nossas vivências.",
     image: "/assets/img/lojinha.jpg", // Substitua pelo caminho da foto da lojinha ou dos produtos
     icon: ShoppingBag, 
-    tag: "Arte & Sustentabilidade"
+    tag: "Agregando Valor"
   }
 ];
 
