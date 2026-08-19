@@ -14,7 +14,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative flex flex-col justify-between min-h-screen w-full px-4 sm:px-8 md:px-16 lg:px-24 pt-28 pb-8 sm:py-20 overflow-hidden bg-[#030014] text-[#E2D9C8]"
+      className="relative flex flex-col justify-between sm:h-[80vh] md:min-h-screen w-full px-4 sm:px-8 md:px-16 lg:px-24 pt-28 pb-8 sm:py-20 overflow-hidden bg-[#030014] text-[#E2D9C8]"
     >
       {/* 1. Nebula Background & Vídeo Cósmico (Cyan para Roxo) */}
       <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
@@ -97,12 +97,14 @@ export default function Hero() {
           className="flex flex-col items-center cursor-pointer group py-1" 
           onClick={() => scrollToSection("sobre")}
         >
-          <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.25em] sm:tracking-[0.3em] uppercase text-cyan-300/70 group-hover:text-cyan-300 transition-colors mb-1 text-center">
+          <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.25em] sm:tracking-[0.3em] uppercase text-cyan-300/70 group-hover:text-cyan-300 transition-colors mb-4 text-center">
             Deslize para viajar ao cosmos
           </span>
           <ChevronDown className="animate-bounce text-cyan-400 group-hover:text-cyan-300 transition-colors" size={20} />
         </div>
       </div>
+      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-cyan-700 via-cyan-600  to-purple-600 animate-glow" />
+      
     </section>
   );
 }
