@@ -61,11 +61,10 @@ def generate_blog_post(news_item):
     """
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash", # Modelo rápido e gratuito no AI Studio
+        model="gemini-2.5-flash",
         contents=prompt,
     )
     
-    # Limpa possíveis crases de markdown caso o modelo retorne formatado
     raw_text = response.text.strip()
     if raw_text.startswith("```json"):
         raw_text = raw_text[7:]
