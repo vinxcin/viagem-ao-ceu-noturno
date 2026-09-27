@@ -1,22 +1,24 @@
-import os
-import json
 import datetime
+import json
+import os
 import time
+
 import feedparser
 from google import genai
 from google.genai.errors import ServerError
 
+
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
+
 def fetch_latest_astronomy_news():
-    """Busca notícias priorizando EHT, ESA, NASA e temas de astrofotografia/etnoastronomia"""
+    """Busca notícias priorizando EHT, ESA, NASA e temas de astrofotografia/etnoastronomia/exploração espacial/sistema solar/conceitos astronomicos/curiosidades astronomicas."""
     rss_urls = [
-        "https://eventhorizontelescope.org/feed", 
-        "https://www.cfa.harvard.edu/news/feed",  
-        "https://www.esa.int/rssfeed/Our_Activities/Space_Science", 
-        "https://www.nasa.gov/rss/dyn/breaking_news.rss"
+        "https://eventhorizontelescope.org/blog",
+        "https://www.esa.int",
+        "https://www.nasa.gov",
     ]
-    
+
     for url in rss_urls:
         try:
             feed = feedparser.parse(url)
@@ -24,18 +26,19 @@ def fetch_latest_astronomy_news():
                 latest = feed.entries[0]
                 return {
                     "title": latest.title,
-                    "summary": getattr(latest, 'summary', latest.title),
-                    "link": latest.link
+                    "summary": getattr(latest, "summary", latest.title),
+                    "link": latest.link,
                 }
         except Exception:
             continue
-            
+
     raise Exception("Nenhuma notícia encontrada em nenhum dos feeds RSS disponíveis.")
+
 
 def generate_blog_post(news_item):
     prompt = f"""
     ### Papel e Identidade
-    Você é o redator-chefe, astrônomo e divulgador científico do projeto educacional itinerante "Viagem ao Céu Noturno". O seu tom de voz é apaixonante, magnético, poético, altamente envolvente e cientificamente rigoroso. Você escreve para despertar pura fascinação no leitor comum e nos entusiastas do cosmos.
+    Você é o redator-chefe, astrônomo e divulgador científico do projeto educacional itinerante "Viagem ao Céu Noturno". O seu tom de voz é apaixonante, poético, altamente envolvente e cientificamente rigoroso. Você escreve para despertar pura fascinação no leitor comum e nos entusiastas do cosmos.
 
     ### Input (Notícia Bruta ou Tema de Referência)
     Título Original: {news_item['title']}
@@ -86,9 +89,9 @@ def generate_blog_post(news_item):
                     raw_text = raw_text[7:]
                 if raw_text.endswith("```"):
                     raw_text = raw_text[:-3]
-                    
+
                 return json.loads(raw_text.strip())
-            
+
             except ServerError:
                 if attempt < max_retries - 1:
                     time.sleep(delay)
@@ -96,33 +99,34 @@ def generate_blog_post(news_item):
                     print(f"Modelo {model_name} indisponível. Tentando próximo modelo...")
                     break
             except Exception as e:
-                # Se for outro tipo de erro de cliente, tenta o próximo ou propaga
                 print(f"Erro com {model_name}: {e}")
                 break
 
     raise Exception("Todos os modelos do Gemini falharam após múltiplas tentativas devido a instabilidade nos servidores.")
 
+
 def save_markdown_file(post_data):
     today_str = datetime.date.today().strftime("%Y-%m-%d")
     filename = f"content/blog/{post_data['filename']}"
     os.makedirs("content/blog", exist_ok=True)
-    
+
     fm = post_data["frontmatter"]
     markdown_content = f"""---
-slug: "{fm['slug']}"
-title: "{fm['title']}"
-date: "{today_str}"
-author: "{fm['author']}"
-description: "{fm['description']}"
-image: "{fm['image']}"
-tags: {json.dumps(fm['tags'], ensure_ascii=False)}
----
+    slug: "{fm['slug']}"
+    title: "{fm['title']}"
+    date: "{today_str}"
+    author: "{fm['author']}"
+    description: "{fm['description']}"
+    image: "{fm['image']}"
+    tags: {json.dumps(fm['tags'], ensure_ascii=False)}
+    ---
 
 {post_data['content']}
 """
     with open(filename, "w", encoding="utf-8") as f:
         f.write(markdown_content)
     print(f"Post gerado com sucesso: {filename}")
+
 
 if __name__ == "__main__":
     news = fetch_latest_astronomy_news()

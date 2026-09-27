@@ -1,8 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import LandingPage from './components/main/index.tsx'
-import BlogPage from './pages/BlogPage.tsx' // Vamos criar este componente
+import LandingPage from './pages/LandingPage/index.tsx'
+import BlogPage from './pages/Blog/BlogPage.tsx' // Vamos criar este componente
 
 function AppRouter() {
   const path = window.location.pathname;
