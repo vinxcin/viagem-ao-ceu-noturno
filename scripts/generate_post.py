@@ -1,47 +1,56 @@
 import os
 import json
 import datetime
+import time
 import feedparser
 from google import genai
+from google.genai.errors import ServerError
 
-# Inicializa o cliente do Gemini usando a chave secreta dos ambientes
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 def fetch_latest_astronomy_news():
-    """Busca a notícia mais recente de um feed RSS confiável de astronomia"""
-    rss_url = "https://www.nasa.gov/rss/dyn/breaking_news.rss"
-    feed = feedparser.parse(rss_url)
+    """Busca notícias priorizando EHT, ESA, NASA e temas de astrofotografia/etnoastronomia"""
+    rss_urls = [
+        "https://eventhorizontelescope.org/feed", 
+        "https://www.cfa.harvard.edu/news/feed",  
+        "https://www.esa.int/rssfeed/Our_Activities/Space_Science", 
+        "https://www.nasa.gov/rss/dyn/breaking_news.rss"
+    ]
     
-    if not feed.entries:
-        raise Exception("Nenhuma notícia encontrada no feed RSS.")
-    
-    latest = feed.entries[0]
-    return {
-        "title": latest.title,
-        "summary": latest.summary,
-        "link": latest.link
-    }
+    for url in rss_urls:
+        try:
+            feed = feedparser.parse(url)
+            if feed.entries:
+                latest = feed.entries[0]
+                return {
+                    "title": latest.title,
+                    "summary": getattr(latest, 'summary', latest.title),
+                    "link": latest.link
+                }
+        except Exception:
+            continue
+            
+    raise Exception("Nenhuma notícia encontrada em nenhum dos feeds RSS disponíveis.")
 
 def generate_blog_post(news_item):
-    """Envia a notícia para o Gemini aplicando o Prompt Mestre do projeto"""
     prompt = f"""
     ### Papel e Identidade
-    Você é o redator-chefe e pesquisador científico do projeto educacional itinerante "Viagem ao Céu Noturno". O seu tom de voz é acolhedor, poético, instigante, contemplativo e cientificamente rigoroso. Você acredita que a astronomia não deve ser distante ou fria, mas sim uma ferramenta de reconexão humana e ancestral com o cosmos.
+    Você é o redator-chefe, astrônomo e divulgador científico do projeto educacional itinerante "Viagem ao Céu Noturno". O seu tom de voz é apaixonante, magnético, poético, altamente envolvente e cientificamente rigoroso. Você escreve para despertar pura fascinação no leitor comum e nos entusiastas do cosmos.
 
-    ### Input (Notícia Bruta)
+    ### Input (Notícia Bruta ou Tema de Referência)
     Título Original: {news_item['title']}
     Resumo/Detalhes: {news_item['summary']}
     Link de Referência: {news_item['link']}
 
-    ### Diretrizes de Escrita
-    1. **Tom e Linguagem:** Português do Brasil fluído, elegante e acessível.
-    2. **Estrutura (Storytelling Cósmico):** 
-       - Título magnético e focado na curiosidade.
-       - Introdução sensorial/ancestral.
-       - Desenvolvimento científico claro.
-       - Conexão filosófica com o nosso lugar entre as estrelas.
-       - Conclusão com um sutil Call to Action (CTA) convidando para conhecer as experiências presenciais do "Viagem ao Céu Noturno".
-    3. **Otimização SEO:** Subtítulos (##) e palavras-chave naturais.
+    ### Diretrizes de Escrita para Prender a Atenção (Engagement Extremo)
+    1. **Título Irresistível:** Crie um título magnético (ex: focado em revelações sobre o cosmos, mistérios de buracos negros, detalhes ocultos de planetas ou sabedoria ancestral). Nada de títulos frios de agência de notícias.
+    2. **Gancho Sensorial (Introdução):** Comece transportando o leitor para baixo de um céu estrelado, descrevendo a imensidão do universo, o brilho da Lua ou o silêncio da noite antes de entrar na ciência.
+    3. **Conteúdo Enriquecido (Escolha uma ou misture de forma fluida):**
+       - **Astrofotografia & Telescópios:** Explique o que a descoberta revela visualmente e como astrofotógrafos ou observadores amadores podem contemplar ou registrar esse fenômeno (detalhes da Lua, planetas, anéis, nebulosas).
+       - **Etnoastronomia Tupi-Guarani (Fundamental quando houver conexão):** Conecte a temática com a cosmovisão indígena brasileira — como a Via Láctea sendo a *Tapir Itapé* (Caminho da Anta), a constelação da Ema, ou a relação dos antigos povos com os ciclos celestes.
+       - **Astrofísica de Vanguarda:** Se for sobre o EHT (Buracos Negros), Relatividade ou Missões Espaciais (NASA/ESA), explique de forma descomplicada, poética e eletrizante.
+    4. **Estrutura Visual:** Use subtítulos atraentes (##) em Markdown, parágrafos curtos e dinâmicos.
+    5. **Encerramento e Fonte:** Finalize com um convite acolhedor para as vivências presenciais do "Viagem ao Céu Noturno" e, obrigatoriamente, insira o link original: `[🔗 Leia o artigo científico completo na fonte original]({news_item['link']})`.
 
     ### Formato de Saída Obrigatório
     Retorne EXPLICITAMENTE em formato JSON puro, estruturado exatamente assim (sem blocos de markdown adicionais como ```json):
@@ -49,35 +58,53 @@ def generate_blog_post(news_item):
       "filename": "AAAA-MM-DD-slug-do-artigo.md",
       "frontmatter": {{
         "slug": "slug-do-artigo",
-        "title": "Título atraente",
+        "title": "Título magnético criado por você",
         "date": "AAAA-MM-DD",
         "author": "Viagem ao Céu Noturno",
-        "description": "Meta-descrição de até 160 caracteres para SEO.",
+        "description": "Meta-descrição intrigante de até 160 caracteres para capturar cliques.",
         "image": "/images/blog/default-cosmos.jpg",
-        "tags": ["Astrofísica", "Ciência", "Cosmos"]
+        "tags": ["Astrofotografia", "Etnoastronomia", "Tupi-Guarani", "Cosmos"]
       }},
       "content": "O texto completo da matéria formatado em Markdown..."
     }}
     """
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt,
-    )
-    
-    raw_text = response.text.strip()
-    if raw_text.startswith("```json"):
-        raw_text = raw_text[7:]
-    if raw_text.endswith("```"):
-        raw_text = raw_text[:-3]
-        
-    return json.loads(raw_text.strip())
+    models_to_try = ["gemini-3.5-flash", "gemini-1.5-flash"]
+
+    for model_name in models_to_try:
+        max_retries = 2
+        delay = 5
+        for attempt in range(max_retries):
+            try:
+                print(f"Tentando gerar com o modelo {model_name} (Tentativa {attempt + 1})...")
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                )
+                raw_text = response.text.strip()
+                if raw_text.startswith("```json"):
+                    raw_text = raw_text[7:]
+                if raw_text.endswith("```"):
+                    raw_text = raw_text[:-3]
+                    
+                return json.loads(raw_text.strip())
+            
+            except ServerError:
+                if attempt < max_retries - 1:
+                    time.sleep(delay)
+                else:
+                    print(f"Modelo {model_name} indisponível. Tentando próximo modelo...")
+                    break
+            except Exception as e:
+                # Se for outro tipo de erro de cliente, tenta o próximo ou propaga
+                print(f"Erro com {model_name}: {e}")
+                break
+
+    raise Exception("Todos os modelos do Gemini falharam após múltiplas tentativas devido a instabilidade nos servidores.")
 
 def save_markdown_file(post_data):
-    """Salva o JSON gerado em um arquivo físico Markdown na pasta do projeto"""
     today_str = datetime.date.today().strftime("%Y-%m-%d")
     filename = f"content/blog/{post_data['filename']}"
-    
     os.makedirs("content/blog", exist_ok=True)
     
     fm = post_data["frontmatter"]
@@ -93,7 +120,6 @@ tags: {json.dumps(fm['tags'], ensure_ascii=False)}
 
 {post_data['content']}
 """
-    
     with open(filename, "w", encoding="utf-8") as f:
         f.write(markdown_content)
     print(f"Post gerado com sucesso: {filename}")
