@@ -23,17 +23,19 @@ jobs:
 
       - name: Instalar Dependências
         run: |
-          pip install feedparser google-genai
+          pip install feedparser google-genai tenacity
 
-      - name: Criar script Python com Foco em Etnoastronomia e Astrofotografia
+      - name: Criar script Python com Proteção contra Erro 503
         run: |
           mkdir -p scripts
           cat << 'EOF' > scripts/generate_post.py
           import os
           import json
           import datetime
+          import time
           import feedparser
           from google import genai
+          from google.genai.errors import ServerError
 
           client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
@@ -98,18 +100,30 @@ jobs:
               }}
               """
 
-              response = client.models.generate_content(
-                  model="gemini-3.5-flash",
-                  contents=prompt,
-              )
-              
-              raw_text = response.text.strip()
-              if raw_text.startswith("```json"):
-                  raw_text = raw_text[7:]
-              if raw_text.endswith("```"):
-                  raw_text = raw_text[:-3]
+              max_retries = 3
+              delay = 10
+
+              for attempt in range(max_retries):
+                  try:
+                      response = client.models.generate_content(
+                          model="gemini-3.5-flash",
+                          contents=prompt,
+                      )
+                      raw_text = response.text.strip()
+                      if raw_text.startswith("```json"):
+                          raw_text = raw_text[7:]
+                      if raw_text.endswith("```"):
+                          raw_text = raw_text[:-3]
+                          
+                      return json.loads(raw_text.strip())
                   
-              return json.loads(raw_text.strip())
+                  except ServerError as e:
+                      if attempt < max_retries - 1:
+                          print(f"Servidor instável (503). Tentando novamente em {delay} segundos... (Tentativa {attempt + 1}/{max_retries})")
+                          time.sleep(delay)
+                          delay *= 2 # Espera exponencial
+                      else:
+                          raise e
 
           def save_markdown_file(post_data):
               today_str = datetime.date.today().strftime("%Y-%m-%d")
