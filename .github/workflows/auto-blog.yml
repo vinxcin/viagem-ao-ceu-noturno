@@ -24,9 +24,107 @@ jobs:
         run: |
           pip install feedparser google-genai
 
-      - name: Listar arquivos (Debug)
+      - name: Criar script Python dinamicamente
         run: |
-          ls -R
+          mkdir -p scripts
+          cat << 'EOF' > scripts/generate_post.py
+          import os
+          import json
+          import datetime
+          import feedparser
+          from google import genai
+
+          client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+
+          def fetch_latest_astronomy_news():
+              rss_url = "https://www.nasa.gov/rss/dyn/breaking_news.rss"
+              feed = feedparser.parse(rss_url)
+              if not feed.entries:
+                  raise Exception("Nenhuma notícia encontrada no feed RSS.")
+              latest = feed.entries[0]
+              return {
+                  "title": latest.title,
+                  "summary": latest.summary,
+                  "link": latest.link
+              }
+
+          def generate_blog_post(news_item):
+              prompt = f"""
+              ### Papel e Identidade
+              Você é o redator-chefe e pesquisador científico do projeto educacional itinerante "Viagem ao Céu Noturno". O seu tom de voz é acolhedor, poético, instigante, contemplativo e cientificamente rigoroso. Você acredita que a astronomia não deve ser distante ou fria, mas sim uma ferramenta de reconexão humana e ancestral com o cosmos.
+
+              ### Input (Notícia Bruta)
+              Título Original: {news_item['title']}
+              Resumo/Detalhes: {news_item['summary']}
+              Link de Referência: {news_item['link']}
+
+              ### Diretrizes de Escrita
+              1. **Tom e Linguagem:** Português do Brasil fluído, elegante e acessível.
+              2. **Estrutura (Storytelling Cósmico):** 
+                 - Título magnético e focado na curiosidade.
+                 - Introdução sensorial/ancestral.
+                 - Desenvolvimento científico claro.
+                 - Conexão filosófica com o nosso lugar entre as estrelas.
+                 - Conclusão com um sutil Call to Action (CTA) convidando para conhecer as experiências presenciais do "Viagem ao Céu Noturno".
+              3. **Otimização SEO:** Subtítulos (##) e palavras-chave naturais.
+
+              ### Formato de Saída Obrigatório
+              Retorne EXPLICITAMENTE em formato JSON puro, estruturado exatamente assim (sem blocos de markdown adicionais como ```json):
+              {{
+                "filename": "AAAA-MM-DD-slug-do-artigo.md",
+                "frontmatter": {{
+                  "slug": "slug-do-artigo",
+                  "title": "Título atraente",
+                  "date": "AAAA-MM-DD",
+                  "author": "Viagem ao Céu Noturno",
+                  "description": "Meta-descrição de até 160 caracteres para SEO.",
+                  "image": "/images/blog/default-cosmos.jpg",
+                  "tags": ["Astrofísica", "Ciência", "Cosmos"]
+                }},
+                "content": "O texto completo da matéria formatado em Markdown..."
+              }}
+              """
+
+              response = client.models.generate_content(
+                  model="gemini-2.5-flash",
+                  contents=prompt,
+              )
+              
+              raw_text = response.text.strip()
+              if raw_text.startswith("```json"):
+                  raw_text = raw_text[7:]
+              if raw_text.endswith("```"):
+                  raw_text = raw_text[:-3]
+                  
+              return json.loads(raw_text.strip())
+
+          def save_markdown_file(post_data):
+              today_str = datetime.date.today().strftime("%Y-%m-%d")
+              filename = f"content/blog/{post_data['filename']}"
+              os.makedirs("content/blog", exist_ok=True)
+              
+              fm = post_data["frontmatter"]
+              markdown_content = f"""---
+          slug: "{fm['slug']}"
+          title: "{fm['title']}"
+          date: "{today_str}"
+          author: "{fm['author']}"
+          description: "{fm['description']}"
+          image: "{fm['image']}"
+          tags: {json.dumps(fm['tags'], ensure_ascii=False)}
+          ---
+
+          {post_data['content']}
+          """
+              with open(filename, "w", encoding="utf-8") as f:
+                  f.write(markdown_content)
+              print(f"Post gerado com sucesso: {filename}")
+
+          if __name__ == "__main__":
+              news = fetch_latest_astronomy_news()
+              post_json = generate_blog_post(news)
+              save_markdown_file(post_json)
+          EOF
 
       - name: Executar Agente Gerador
         env:
