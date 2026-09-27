@@ -42,7 +42,7 @@ export default function BlogPage() {
             Explorações e saberes <span className="text-transparent bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text">cósmicos</span>
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
-            Um espaço dedicado à disseminação do conhecimento para ampliar nossa percepção e conexão com o cosmos.
+            Um espaço dedicado à disseminação do conhecimento, expandir o olhar e despertar nossa conexão com o universo.  
           </p>
         </section>
 
