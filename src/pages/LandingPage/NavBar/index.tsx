@@ -33,19 +33,13 @@ export default function NavBar() {
             {NavBarItens.map((item) => (
               <a
                 key={item.id}
-                href={`/#${item.id}`}
+                href={`/${item.id}`}
                 className="font-medium text-sm lg:text-base cursor-pointer transition-colors duration-200 hover:text-cyan-300"
               >
                 {item.name}
               </a>
             ))}
-            
-          <a
-            href="/blog"
-            className="font-medium text-sm lg:text-base cursor-pointer transition-colors duration-200 hover:text-cyan-300"
-          >
-            Blog
-          </a>
+
           </div>
         </div>
 
@@ -99,12 +93,7 @@ export default function NavBar() {
                 {item.name}
               </a>
             ))}
-          <a
-            href="/blog"
-            className="font-medium text-sm lg:text-base cursor-pointer transition-colors duration-200 hover:text-cyan-300"
-          >
-            Blog
-          </a>
+
 
             <div className="w-12 h-[1px] bg-[#7042f861] my-2" />
 

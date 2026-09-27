@@ -79,7 +79,8 @@ export const NavBarItens: NavBarItem[] = [
   { name: "Sobre o Projeto", id: "sobre" },
   { name: "Vivências", id: "vivencias" },
   { name: "Saberes", id: "saberes" },
-  { name: "Contato", id: "contato" }
+  { name: "Contato", id: "contato" },
+  { name: "Blog Astral", id: "blog-astral" }
 ];
 
 export const Images: AboutImage[] = [

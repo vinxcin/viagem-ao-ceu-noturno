@@ -80,6 +80,13 @@ def generate_blog_post(topic):
     4. **Enriquecimento Visual:** No texto em Markdown, inclua marcadores ou sugestões de descrição visual (ex: `*[Legenda sugerida: Detalhe das crateras lunares em alta resolução]*`) para orientar o uso de imagens imersivas.
     5. **Encerramento e Referência Confiável:** Finalize com um convite acolhedor para as vivências presenciais do "Viagem ao Céu Noturno" e inclua obrigatoriamente a referência científica confiável no final: `[🔗 Saiba mais e acesse a fonte confiável]({topic['link']})`.
 
+    ### Normalização obrigatória do Markdown
+    - O campo `content` deve conter Markdown válido, com quebras de linha reais entre parágrafos e títulos `##`/`###`; não devolva os caracteres literais `\\n`.
+    - Use `**texto**` para negrito e `[texto descritivo](URL)` para links. O link da fonte deve usar exatamente a URL fornecida acima, sem espaços, parênteses extras ou URL inventada.
+    - Inclua a imagem fornecida no corpo usando `![descrição acessível]({topic['image']})`. Use a mesma imagem também no campo `frontmatter.image`.
+    - Não escreva etiquetas como `[Legenda sugerida: ...]` no lugar de mídia e não use HTML. Não inclua cercas de código em volta do JSON.
+    - Retorne `content` como uma string JSON válida: escape as quebras de linha conforme JSON exige; após o parse, elas devem ser quebras de linha reais.
+
     ### Formato de Saída Obrigatório
     Retorne EXPLICITAMENTE em formato JSON puro, estruturado exatamente assim (sem blocos de markdown adicionais como ```json):
     {{

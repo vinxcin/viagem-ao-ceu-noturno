@@ -1,4 +1,6 @@
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { BlogPost } from "@/types";
 import { getAllPosts } from "@/types";
 import BackgroundStars from "@/pages/LandingPage/BackgroundStars";
@@ -90,7 +92,30 @@ export default function BlogPage() {
               <h2 id="article-title" className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl">{selectedPost.title}</h2>
             </div>
             {selectedPost.image && <img src={selectedPost.image} alt={selectedPost.title} className="mt-6 max-h-72 w-full rounded-2xl object-cover" />}
-            <div className="mt-6 whitespace-pre-line break-words border-t border-white/[0.08] pt-6 text-sm leading-7 text-slate-300 sm:text-base sm:leading-8">{selectedPost.content}</div>
+            <article className="mt-6 max-w-none break-words border-t border-white/[0.08] pt-6 text-sm leading-7 text-slate-300 sm:text-base sm:leading-8">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  h2: ({ children }) => <h2 className="mb-3 mt-8 text-xl font-semibold text-white sm:text-2xl">{children}</h2>,
+                  h3: ({ children }) => <h3 className="mb-2 mt-6 text-lg font-semibold text-white">{children}</h3>,
+                  p: ({ children }) => <p className="mb-5">{children}</p>,
+                  strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+                  ul: ({ children }) => <ul className="mb-5 list-disc space-y-2 pl-6">{children}</ul>,
+                  ol: ({ children }) => <ol className="mb-5 list-decimal space-y-2 pl-6">{children}</ol>,
+                  blockquote: ({ children }) => <blockquote className="mb-5 border-l-2 border-violet-300/50 pl-4 italic text-slate-300">{children}</blockquote>,
+                  a: ({ href, children, ...props }) => (
+                    <a className="text-cyan-300 underline underline-offset-4 hover:text-cyan-100" href={href} target="_blank" rel="noopener noreferrer" {...props}>
+                      {children}
+                    </a>
+                  ),
+                  img: ({ src, alt, ...props }) => src ? (
+                    <img className="mx-auto my-6 max-h-[32rem] rounded-2xl object-contain" src={src} alt={alt ?? "Imagem do artigo"} loading="lazy" {...props} />
+                  ) : null,
+                }}
+              >
+                {selectedPost.content.replace(/\\n/g, "\n")}
+              </ReactMarkdown>
+            </article>
             <div className="mt-9 rounded-2xl border border-violet-200/10 bg-gradient-to-br from-violet-500/[0.12] to-cyan-500/[0.08] p-5 text-center sm:p-7">
               <h3 className="text-lg font-semibold text-white">Gostou da jornada?</h3>
               <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-300">Conecte-se com o cosmos ao vivo em nossas observações astronômicas itinerantes.</p>
