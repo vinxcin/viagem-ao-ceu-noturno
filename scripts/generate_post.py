@@ -1,8 +1,13 @@
 import datetime
+from html.parser import HTMLParser
 import json
+import mimetypes
 import os
 import random
 import time
+from pathlib import Path
+from urllib.parse import urlencode, urljoin, urlparse
+from urllib.request import Request, urlopen
 from google import genai
 from google.genai.errors import ServerError
 
@@ -58,6 +63,141 @@ def select_strategic_astronomy_topic():
     print(f"Tema selecionado estrategicamente [{chosen['category']}]: {chosen['title']}")
     return chosen
 
+
+class SocialImageParser(HTMLParser):
+    """Extrai a imagem de compartilhamento declarada pela página de referência."""
+
+    def __init__(self):
+        super().__init__()
+        self.image_url = None
+
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() != "meta" or self.image_url:
+            return
+        values = {key.lower(): value for key, value in attrs if key and value}
+        property_name = values.get("property", "").lower()
+        name = values.get("name", "").lower()
+        if property_name == "og:image" or name in {"twitter:image", "twitter:image:src"}:
+            self.image_url = values.get("content")
+
+
+def download_image(image_url, output_dir, filename_stem):
+    """Baixa uma URL de imagem e retorna seu caminho público local."""
+    parsed = urlparse(image_url)
+    if parsed.scheme != "https" or not parsed.hostname:
+        raise RuntimeError("A URL da imagem não é HTTPS válida.")
+
+    request = Request(image_url, headers={"User-Agent": "ViagemAoCeuNoturnoBlog/1.0"})
+    with urlopen(request, timeout=30) as response:
+        content_type = response.headers.get_content_type()
+        if not content_type.startswith("image/"):
+            raise RuntimeError(f"A URL retornou conteúdo do tipo {content_type}, não uma imagem.")
+        image_bytes = response.read()
+
+    if not image_bytes:
+        raise RuntimeError("O arquivo de imagem baixado está vazio.")
+
+    extension = mimetypes.guess_extension(content_type) or Path(parsed.path).suffix or ".jpg"
+    if extension == ".jpe":
+        extension = ".jpg"
+    filename = f"{filename_stem}{extension}"
+    output_path = output_dir / filename
+    output_path.write_bytes(image_bytes)
+    return f"/images/blog/{filename}"
+
+
+def extract_source_image(topic, output_dir):
+    """Tenta usar a imagem OG/Twitter da própria página que serve de referência."""
+    request = Request(topic["link"], headers={"User-Agent": "Mozilla/5.0 (compatible; BlogAstral/1.0)"})
+    with urlopen(request, timeout=20) as response:
+        content_type = response.headers.get_content_type()
+        if "html" not in content_type:
+            raise RuntimeError(f"A fonte não retornou uma página HTML ({content_type}).")
+        html = response.read(2_000_000).decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+
+    parser = SocialImageParser()
+    parser.feed(html)
+    if not parser.image_url:
+        raise RuntimeError("A página de referência não declara og:image nem twitter:image.")
+
+    image_url = urljoin(topic["link"], parser.image_url)
+    topic["image"] = download_image(image_url, output_dir, Path(topic["image"]).stem)
+    topic["image_alt"] = f"Imagem da página de referência sobre {topic['category']}"
+    topic["image_source"] = topic["link"]
+    return topic
+
+
+def download_nasa_image(topic, output_dir):
+    """Busca uma imagem ilustrativa na NASA como alternativa à imagem da fonte."""
+    filename_stem = Path(topic["image"]).stem
+
+    query_by_category = {
+        "Etnoastronomia Tupi-Guarani": "Milky Way night sky",
+        "Ferramentas Educativas & Observação": "star field night sky",
+        "Sistema Solar & Curiosidades": "Jupiter planet",
+        "Astrofotografia & Telescópios": "Moon surface",
+        "Conceitos Astronômicos & Cosmologia": "black hole galaxy",
+    }
+
+    def get_json(url):
+        request = Request(url, headers={"User-Agent": "ViagemAoCeuNoturnoBlog/1.0"})
+        with urlopen(request, timeout=20) as response:
+            return json.loads(response.read().decode("utf-8"))
+
+    try:
+        query = query_by_category.get(topic["category"], "astronomy space")
+        search_url = "https://images-api.nasa.gov/search?" + urlencode({
+            "q": query,
+            "media_type": "image",
+            "page_size": 10,
+        })
+        results = get_json(search_url).get("collection", {}).get("items", [])
+        if not results:
+            fallback_url = "https://images-api.nasa.gov/search?" + urlencode({
+                "q": "astronomy stars galaxy",
+                "media_type": "image",
+                "page_size": 10,
+            })
+            results = get_json(fallback_url).get("collection", {}).get("items", [])
+        if not results:
+            raise RuntimeError("A busca na NASA não retornou imagens.")
+
+        nasa_id = results[0].get("data", [{}])[0].get("nasa_id")
+        if not nasa_id:
+            raise RuntimeError("O resultado da NASA não contém um identificador de imagem.")
+
+        assets = get_json(f"https://images-api.nasa.gov/asset/{nasa_id}").get("collection", {}).get("items", [])
+        image_url = next(
+            (item.get("href") for item in assets if item.get("href", "").endswith(("~medium.jpg", "~large.jpg"))),
+            None,
+        )
+        if not image_url:
+            image_url = next((item.get("href") for item in assets if item.get("href", "").lower().endswith((".jpg", ".jpeg", ".png"))), None)
+        if not image_url:
+            raise RuntimeError(f"A NASA não retornou arquivo de imagem compatível para {nasa_id}.")
+
+        topic["image"] = download_image(image_url, output_dir, filename_stem)
+        topic["image_alt"] = f"Imagem ilustrativa relacionada a {topic['category']}"
+        topic["image_source"] = f"https://images.nasa.gov/details/{nasa_id}"
+        print(f"Imagem ilustrativa baixada da NASA: {topic['image']} (NASA ID: {nasa_id})")
+    except Exception as e:
+        raise RuntimeError(f"Não foi possível obter uma imagem alternativa da NASA: {e}") from e
+
+    return topic
+
+
+def download_topic_image(topic):
+    """Prefere a imagem da fonte do conteúdo e recorre à NASA se necessário."""
+    output_dir = Path("public/images/blog")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        topic = extract_source_image(topic, output_dir)
+        print(f"Imagem extraída da fonte do conteúdo: {topic['image']}")
+        return topic
+    except Exception as e:
+        print(f"Não foi possível extrair imagem da fonte ({e}). Usando imagem alternativa da NASA...")
+        return download_nasa_image(topic, output_dir)
+
 def generate_blog_post(topic):
     prompt = f"""
     ### Papel e Identidade
@@ -69,6 +209,8 @@ def generate_blog_post(topic):
     Contexto/Resumo: {topic['summary']}
     Fonte Confiável de Referência: {topic['link']}
     Imagem Sugerida: {topic['image']}
+    Texto alternativo da imagem: {topic['image_alt']}
+    Origem da imagem: {topic.get('image_source', topic['link'])}
 
     ### Diretrizes de Escrita Rigorosas e Magnéticas
     1. **Título Magnético:** Crie um título altamente atraente e instigante baseado no tema acima.
@@ -83,7 +225,9 @@ def generate_blog_post(topic):
     ### Normalização obrigatória do Markdown
     - O campo `content` deve conter Markdown válido, com quebras de linha reais entre parágrafos e títulos `##`/`###`; não devolva os caracteres literais `\\n`.
     - Use `**texto**` para negrito e `[texto descritivo](URL)` para links. O link da fonte deve usar exatamente a URL fornecida acima, sem espaços, parênteses extras ou URL inventada.
-    - Inclua a imagem fornecida no corpo usando `![descrição acessível]({topic['image']})`. Use a mesma imagem também no campo `frontmatter.image`.
+    - Inclua a imagem fornecida no corpo usando exatamente `![{topic['image_alt']}]({topic['image']})`. Use o mesmo caminho também no campo `frontmatter.image`.
+    - A imagem prioritária vem da página da fonte acima. Se ela não estiver disponível, será usada uma imagem ilustrativa alternativa; não diga que uma alternativa representa a imagem original da matéria.
+    - A imagem pode ser apenas ilustrativa; não afirme que ela mostra o objeto ou evento da notícia se a fonte não confirmar isso.
     - Não escreva etiquetas como `[Legenda sugerida: ...]` no lugar de mídia e não use HTML. Não inclua cercas de código em volta do JSON.
     - Retorne `content` como uma string JSON válida: escape as quebras de linha conforme JSON exige; após o parse, elas devem ser quebras de linha reais.
 
@@ -104,7 +248,9 @@ def generate_blog_post(topic):
     }}
     """
 
-    models_to_try = ["gemini-3.5-flash", "gemini-1.5-flash"]
+    # Use current GenerateContent model IDs; Gemini 1.5 Flash is no longer available.
+    models_to_try = ["gemini-3.8-flash", "gemini-3.5-flash"]
+    errors = []
 
     for model_name in models_to_try:
         max_retries = 2
@@ -129,12 +275,15 @@ def generate_blog_post(topic):
                     time.sleep(delay)
                 else:
                     print(f"Modelo {model_name} indisponível. Tentando próximo modelo...")
+                    errors.append(f"{model_name}: erro temporário do servidor após {max_retries} tentativas")
                     break
             except Exception as e:
                 print(f"Erro com {model_name}: {e}")
+                errors.append(f"{model_name}: {e}")
                 break
 
-    raise Exception("Todos os modelos do Gemini falharam após múltiplas tentativas devido a instabilidade nos servidores.")
+    details = " | ".join(errors) if errors else "nenhum detalhe retornado pela API"
+    raise RuntimeError(f"Não foi possível gerar o post com os modelos configurados. Erros: {details}")
 
 def save_markdown_file(post_data):
     today_str = datetime.date.today().strftime("%Y-%m-%d")
@@ -159,6 +308,6 @@ tags: {json.dumps(fm['tags'], ensure_ascii=False)}
     print(f"Post gerado com sucesso: {filename}")
 
 if __name__ == "__main__":
-    topic_item = select_strategic_astronomy_topic()
+    topic_item = download_topic_image(select_strategic_astronomy_topic())
     post_json = generate_blog_post(topic_item)
     save_markdown_file(post_json)
