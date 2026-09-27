@@ -86,7 +86,7 @@ export default function NavBar() {
             {NavBarItens.map((item) => (
               <a
                 key={item.id}
-                href={`/#${item.id}`}
+                href={`/${item.id}`}
                 onClick={closeMenu}
                 className="text-gray-200 text-2xl font-medium hover:text-cyan-400 transition-colors duration-300"
               >
