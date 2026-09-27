@@ -1,4 +1,4 @@
-name: Gerador Automático de Posts do Blog
+name: Sugerir Novo Post (Pull Request)
 
 on:
   schedule:
@@ -6,10 +6,11 @@ on:
   workflow_dispatch: # Permite disparar manualmente no GitHub
 
 jobs:
-  build-post:
+  create-pull-request:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Permite que o GitHub Actions faça commits no repositório
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Clonar Repositório
@@ -24,7 +25,7 @@ jobs:
         run: |
           pip install feedparser google-genai
 
-      - name: Criar script Python dinamicamente
+      - name: Criar script Python com Foco em Etnoastronomia e Astrofotografia
         run: |
           mkdir -p scripts
           cat << 'EOF' > scripts/generate_post.py
@@ -37,12 +38,12 @@ jobs:
           client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
           def fetch_latest_astronomy_news():
-              """Busca notícias priorizando EHT, ESA e NASA"""
+              """Busca notícias priorizando EHT, ESA, NASA e temas de astrofotografia/etnoastronomia"""
               rss_urls = [
-                  "https://eventhorizontelescope.org/feed", # Fontes oficiais do EHT
-                  "https://www.cfa.harvard.edu/news/feed",  # Smithsonian / EHT News
-                  "https://www.esa.int/rssfeed/Our_Activities/Space_Science", # ESA
-                  "https://www.nasa.gov/rss/dyn/breaking_news.rss" # NASA
+                  "https://eventhorizontelescope.org/feed", 
+                  "https://www.cfa.harvard.edu/news/feed",  
+                  "https://www.esa.int/rssfeed/Our_Activities/Space_Science", 
+                  "https://www.nasa.gov/rss/dyn/breaking_news.rss"
               ]
               
               for url in rss_urls:
@@ -63,22 +64,22 @@ jobs:
           def generate_blog_post(news_item):
               prompt = f"""
               ### Papel e Identidade
-              Você é o redator-chefe e pesquisador científico do projeto educacional itinerante "Viagem ao Céu Noturno". O seu tom de voz é acolhedor, poético, instigante, contemplativo e cientificamente rigoroso. Você acredita que a astronomia não deve ser distante ou fria, mas sim uma ferramenta de reconexão humana e ancestral com o cosmos.
+              Você é o redator-chefe e pesquisador científico do projeto educacional itinerante "Viagem ao Céu Noturno". O seu tom de voz é acolhedor, poético, instigante, contemplativo e cientificamente rigoroso. Você valoriza profundamente a astronomia de observação (como astrofotografia da Lua e planetas) e a **etnoastronomia** (especialmente a rica cultura e cosmovisão **Tupi-Guarani**, como o Caminho da Anta / Tapir Itapé na Via Láctea, as Plêiades / Ema, etc., quando relevante).
 
-              ### Input (Notícia Bruta)
+              ### Input (Notícia Bruta ou Tema)
               Título Original: {news_item['title']}
               Resumo/Detalhes: {news_item['summary']}
               Link de Referência: {news_item['link']}
 
               ### Diretrizes de Escrita
-              1. **Tom e Linguagem:** Português do Brasil fluído, elegante e acessível.
+              1. **Tom e Linguagem:** Português do Brasil fluído, elegante, poético e acessível.
               2. **Estrutura (Storytelling Cósmico):** 
                  - Título magnético e focado na curiosidade.
-                 - Introdução sensorial/ancestral.
-                 - Desenvolvimento científico claro (com ênfase especial se envolver buracos negros, horizonte de eventos, relatividade ou astrofísica de alta precisão).
-                 - Conexão filosófica com o nosso lugar entre as estrelas.
-                 - Conclusão com um sutil Call to Action (CTA) convidando para conhecer as experiências presenciais do "Viagem ao Céu Noturno".
-              3. **Otimização SEO:** Subtítulos (##) e palavras-chave naturais.
+                 - Introdução sensorial/ancestral (conectando o céu moderno com o olhar dos antigos povos ou da contemplação visual).
+                 - Desenvolvimento científico claro e rigoroso.
+                 - Conexão filosófica/cultural (citação sutil à etnoastronomia Tupi-Guarani ou à beleza da astrofotografia planetária/lunar quando aplicável).
+                 - Conclusão com um Call to Action (CTA) convidando para conhecer as experiências presenciais do "Viagem ao Céu Noturno".
+                 - **Obrigatório no final do texto:** Incluir explicitamente o link de referência original: `[🔗 Leia a matéria completa na fonte original]({news_item['link']})`.
 
               ### Formato de Saída Obrigatório
               Retorne EXPLICITAMENTE em formato JSON puro, estruturado exatamente assim (sem blocos de markdown adicionais como ```json):
@@ -91,7 +92,7 @@ jobs:
                   "author": "Viagem ao Céu Noturno",
                   "description": "Meta-descrição de até 160 caracteres para SEO.",
                   "image": "/images/blog/default-cosmos.jpg",
-                  "tags": ["Buracos Negros", "EHT", "Astrofísica", "Cosmos"]
+                  "tags": ["Etnoastronomia", "Tupi-Guarani", "Astrofotografia", "Cosmos"]
                 }},
                 "content": "O texto completo da matéria formatado em Markdown..."
               }}
@@ -144,10 +145,13 @@ jobs:
         run: |
           python scripts/generate_post.py
 
-      - name: Fazer Commit e Push do Novo Post
-        run: |
-          git config --global user.name "Agente Viagem ao Céu Noturno"
-          git config --global user.email "actions@github.com"
-          git add content/blog/
-          git commit -m "🤖 Novo post gerado automaticamente pelo agente Gemini (EHT/ESA/NASA)"
-          git push
+      - name: Criar Pull Request de Aprovação
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "🤖 Nova sugestão de post pelo agente cósmico"
+          title: "✨ Nova Matéria para Aprovação do Blog"
+          body: "Este Pull Request foi gerado automaticamente pelo agente de IA. Revise o texto, as tags e o link de referência antes de fazer o merge para a branch principal!"
+          branch: agente-novo-post
+          delete-branch: true
+          base: main
