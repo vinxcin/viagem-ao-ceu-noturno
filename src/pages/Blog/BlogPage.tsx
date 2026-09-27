@@ -53,7 +53,7 @@ export default function BlogPage() {
             Explorações e saberes <span className="text-transparent bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text">cósmicos</span>
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
-            Artigos sobre o universo para ampliar nosso senso de pertencimento ao cosmos.
+            Um espaço dedicado para à disseminação do conhecimento, expandir o olhar e despertar nossa conexão com o universo.
           </p>
         </section>
 
@@ -128,9 +128,9 @@ export default function BlogPage() {
               </ReactMarkdown>
             </article>
             <div className="mt-9 rounded-2xl border border-violet-200/10 bg-gradient-to-br from-violet-500/[0.12] to-cyan-500/[0.08] p-5 text-center sm:p-7">
-              <h3 className="text-lg font-semibold text-white">Gostou da jornada?</h3>
-              <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-300">Conecte-se com o cosmos ao vivo em nossas observações astronômicas itinerantes.</p>
-              <a href="/#vivencias" className="mt-5 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-cyan-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110">Conhecer experiências</a>
+              <h3 className="text-lg font-semibold text-white">Gostou da conteúdo?</h3>
+              <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-300">Venha vivenciar nossas observações astronômicas itinerantes.</p>
+              <a href="/#vivencias" className="mt-5 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-cyan-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110">Conhecer o projeto</a>
             </div>
           </section>
         </div>
