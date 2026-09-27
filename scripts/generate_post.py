@@ -84,8 +84,12 @@ class SocialImageParser(HTMLParser):
 def download_image(image_url, output_dir, filename_stem):
     """Baixa uma URL de imagem e retorna seu caminho público local."""
     parsed = urlparse(image_url)
+    if parsed.scheme == "http":
+        # NASA e algumas páginas ainda anunciam imagens por HTTP, embora aceitem HTTPS.
+        parsed = parsed._replace(scheme="https")
+        image_url = parsed.geturl()
     if parsed.scheme != "https" or not parsed.hostname:
-        raise RuntimeError("A URL da imagem não é HTTPS válida.")
+        raise RuntimeError(f"URL de imagem inválida ou insegura: {image_url}")
 
     request = Request(image_url, headers={"User-Agent": "ViagemAoCeuNoturnoBlog/1.0"})
     with urlopen(request, timeout=30) as response:
