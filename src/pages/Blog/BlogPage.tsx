@@ -15,7 +15,7 @@ export default function BlogPage() {
     ? decodeURIComponent(pathname.slice(postPathPrefix.length))
     : null;
   const initialPost = posts.find((post) => post.slug === requestedSlug) ?? null;
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(initialPost);
+  const [selectedPost] = useState<BlogPost | null>(initialPost);
 
   const returnToBlog = () => {
     window.history.pushState({}, "", "/blog-astral");
