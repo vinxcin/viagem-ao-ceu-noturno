@@ -4,7 +4,7 @@ title: "O Céu na Palma da Mão: Guia Passo a Passo do Stellarium Mobile Grátis
 date: "2026-09-27"
 author: "Viagem ao Céu Noturno"
 description: "Aprenda a usar o Stellarium Mobile grátis para identificar estrelas, planetas e constelações e planejar sua primeira observação do céu."
-image: \src\assets\img\pico_do_gaviao_capao.webp
+image: "/images/pico_do_gaviao_capao.webp"
 tags: ["Ferramentas Educativas & Observação", "Astronomia", "Ciência", "Cosmos"]
 ---
 
