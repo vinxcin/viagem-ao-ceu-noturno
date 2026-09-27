@@ -25,7 +25,7 @@ jobs:
         run: |
           pip install feedparser google-genai tenacity
 
-      - name: Criar script Python com Proteção contra Erro 503
+      - name: Criar script Python com Prompt Enriquecido e Magnético
         run: |
           mkdir -p scripts
           cat << 'EOF' > scripts/generate_post.py
@@ -66,22 +66,22 @@ jobs:
           def generate_blog_post(news_item):
               prompt = f"""
               ### Papel e Identidade
-              Você é o redator-chefe e pesquisador científico do projeto educacional itinerante "Viagem ao Céu Noturno". O seu tom de voz é acolhedor, poético, instigante, contemplativo e cientificamente rigoroso. Você valoriza profundamente a astronomia de observação (como astrofotografia da Lua e planetas) e a **etnoastronomia** (especialmente a rica cultura e cosmovisão **Tupi-Guarani**, como o Caminho da Anta / Tapir Itapé na Via Láctea, as Plêiades / Ema, etc., quando relevante).
+              Você é o redator-chefe, astrônomo e divulgador científico do projeto educacional itinerante "Viagem ao Céu Noturno". O seu tom de voz é apaixonante, magnético, poético, altamente envolvente e cientificamente rigoroso. Você escreve para despertar pura fascinação no leitor comum e nos entusiastas do cosmos.
 
-              ### Input (Notícia Bruta ou Tema)
+              ### Input (Notícia Bruta ou Tema de Referência)
               Título Original: {news_item['title']}
               Resumo/Detalhes: {news_item['summary']}
               Link de Referência: {news_item['link']}
 
-              ### Diretrizes de Escrita
-              1. **Tom e Linguagem:** Português do Brasil fluído, elegante, poético e acessível.
-              2. **Estrutura (Storytelling Cósmico):** 
-                 - Título magnético e focado na curiosidade.
-                 - Introdução sensorial/ancestral (conectando o céu moderno com o olhar dos antigos povos ou da contemplação visual).
-                 - Desenvolvimento científico claro e rigoroso.
-                 - Conexão filosófica/cultural (citação sutil à etnoastronomia Tupi-Guarani ou à beleza da astrofotografia planetária/lunar quando aplicável).
-                 - Conclusão com um Call to Action (CTA) convidando para conhecer as experiências presenciais do "Viagem ao Céu Noturno".
-                 - **Obrigatório no final do texto:** Incluir explicitamente o link de referência original: `[🔗 Leia a matéria completa na fonte original]({news_item['link']})`.
+              ### Diretrizes de Escrita para Prender a Atenção (Engagement Extremo)
+              1. **Título Irresistível:** Crie um título magnético (ex: focado em revelações sobre o cosmos, mistérios de buracos negros, detalhes ocultos de planetas ou sabedoria ancestral). Nada de títulos frios de agência de notícias.
+              2. **Gancho Sensorial (Introdução):** Comece transportando o leitor para baixo de um céu estrelado, descrevendo a imensidão do universo, o brilho da Lua ou o silêncio da noite antes de entrar na ciência.
+              3. **Conteúdo Enriquecido (Escolha uma ou misture de forma fluida):**
+                 - **Astrofotografia & Telescópios:** Explique o que a descoberta revela visualmente e como astrofotógrafos ou observadores amadores podem contemplar ou registrar esse fenômeno (detalhes da Lua, planetas, anéis, nebulosas).
+                 - **Etnoastronomia Tupi-Guarani (Fundamental quando houver conexão):** Conecte a temática com a cosmovisão indígena brasileira — como a Via Láctea sendo a *Tapir Itapé* (Caminho da Anta), a constelação da Ema, ou a relação dos antigos povos com os ciclos celestes.
+                 - **Astrofísica de Vanguarda:** Se for sobre o EHT (Buracos Negros), Relatividade ou Missões Espaciais (NASA/ESA), explique de forma descomplicada, poética e eletrizante.
+              4. **Estrutura Visual:** Use subtítulos atraentes (##) em Markdown, parágrafos curtos e dinâmicos.
+              5. **Encerramento e Fonte:** Finalize com um convite acolhedor para as vivências presenciais do "Viagem ao Céu Noturno" e, obrigatoriamente, insira o link original: `[🔗 Leia o artigo científico completo na fonte original]({news_item['link']})`.
 
               ### Formato de Saída Obrigatório
               Retorne EXPLICITAMENTE em formato JSON puro, estruturado exatamente assim (sem blocos de markdown adicionais como ```json):
@@ -89,12 +89,12 @@ jobs:
                 "filename": "AAAA-MM-DD-slug-do-artigo.md",
                 "frontmatter": {{
                   "slug": "slug-do-artigo",
-                  "title": "Título atraente",
+                  "title": "Título magnético criado por você",
                   "date": "AAAA-MM-DD",
                   "author": "Viagem ao Céu Noturno",
-                  "description": "Meta-descrição de até 160 caracteres para SEO.",
+                  "description": "Meta-descrição intrigante de até 160 caracteres para capturar cliques.",
                   "image": "/images/blog/default-cosmos.jpg",
-                  "tags": ["Etnoastronomia", "Tupi-Guarani", "Astrofotografia", "Cosmos"]
+                  "tags": ["Astrofotografia", "Etnoastronomia", "Tupi-Guarani", "Cosmos"]
                 }},
                 "content": "O texto completo da matéria formatado em Markdown..."
               }}
@@ -121,7 +121,7 @@ jobs:
                       if attempt < max_retries - 1:
                           print(f"Servidor instável (503). Tentando novamente em {delay} segundos... (Tentativa {attempt + 1}/{max_retries})")
                           time.sleep(delay)
-                          delay *= 2 # Espera exponencial
+                          delay *= 2
                       else:
                           raise e
 
@@ -163,9 +163,9 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "🤖 Nova sugestão de post pelo agente cósmico"
-          title: "✨ Nova Matéria para Aprovação do Blog"
-          body: "Este Pull Request foi gerado automaticamente pelo agente de IA. Revise o texto, as tags e o link de referência antes de fazer o merge para a branch principal!"
+          commit-message: "🤖 Nova matéria magnética gerada pelo agente"
+          title: "✨ Nova Matéria Enriquecida para o Blog"
+          body: "Este Pull Request foi gerado pelo agente com foco em engajamento, astrofotografia e etnoastronomia Tupi-Guarani. Revise e aprove!"
           branch: agente-novo-post
           delete-branch: true
           base: main
