@@ -9,7 +9,18 @@ import { ArrowLeft, ArrowRight, Instagram, X } from "lucide-react";
 
 export default function BlogPage() {
   const posts = getAllPosts();
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const postPathPrefix = "/blog-astral-";
+  const pathname = window.location.pathname.replace(/\/+$/, "");
+  const requestedSlug = pathname.startsWith(postPathPrefix)
+    ? decodeURIComponent(pathname.slice(postPathPrefix.length))
+    : null;
+  const initialPost = posts.find((post) => post.slug === requestedSlug) ?? null;
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(initialPost);
+
+  const returnToBlog = () => {
+    window.history.pushState({}, "", "/blog-astral");
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-[#05030f] text-slate-100 selection:bg-cyan-300/30">
@@ -42,7 +53,7 @@ export default function BlogPage() {
             Explorações e saberes <span className="text-transparent bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text">cósmicos</span>
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
-            Um espaço dedicado à disseminação do conhecimento, expandir o olhar e despertar nossa conexão com o universo.  
+            Artigos sobre o universo para ampliar nosso senso de pertencimento ao cosmos.
           </p>
         </section>
 
@@ -71,9 +82,9 @@ export default function BlogPage() {
                   <time className="text-xs font-medium text-cyan-300/90">{post.date}</time>
                   <h2 className="mt-3 line-clamp-2 text-lg font-semibold leading-snug text-slate-100 sm:text-xl">{post.title}</h2>
                   <p className="mt-3 line-clamp-3 flex-1 text-sm leading-6 text-slate-400">{post.description}</p>
-                  <button type="button" onClick={() => setSelectedPost(post)} className="mt-6 cursor-pointer inline-flex w-fit items-center gap-2 rounded-full border border-cyan-200/15 bg-cyan-200/[0.06] px-4 py-2 text-sm font-medium text-cyan-200 transition hover:border-cyan-200/35 hover:bg-cyan-200/[0.12]">
+                  <a href={`/blog-astral-${encodeURIComponent(post.slug)}`} onClick={(event) => { event.preventDefault(); window.history.pushState({}, "", event.currentTarget.href); window.dispatchEvent(new PopStateEvent("popstate")); }} className="mt-6 inline-flex w-fit items-center gap-2 rounded-full border border-cyan-200/15 bg-cyan-200/[0.06] px-4 py-2 text-sm font-medium text-cyan-200 transition hover:border-cyan-200/35 hover:bg-cyan-200/[0.12]">
                     Ler matéria <ArrowRight size={15} />
-                  </button>
+                  </a>
                 </div>
               </article>
             ))}
@@ -82,11 +93,11 @@ export default function BlogPage() {
       </main>
 
       {selectedPost && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 p-0 backdrop-blur-sm sm:items-center sm:p-5" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelectedPost(null); }}>
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 p-0 backdrop-blur-sm sm:items-center sm:p-5" onMouseDown={(event) => { if (event.target === event.currentTarget) returnToBlog(); }}>
           <section role="dialog" aria-modal="true" aria-labelledby="article-title" className="relative max-h-[92dvh] w-full overflow-y-auto overscroll-contain rounded-t-3xl border border-white/10 bg-[#090714] p-5 shadow-2xl shadow-black/60 sm:max-h-[88vh] sm:max-w-3xl sm:rounded-3xl sm:p-8 md:p-10">
-            <button type="button" onClick={() => setSelectedPost(null)} className="absolute cursor-pointer right-4 top-4 grid size-10 place-items-center rounded-full border border-white/10 bg-white/[0.05] text-slate-300 transition hover:bg-white/10 hover:text-white sm:right-6 sm:top-6" aria-label="Fechar artigo">
+            <a href="/blog-astral" onClick={(event) => { event.preventDefault(); returnToBlog(); }} className="absolute right-4 top-4 grid size-10 place-items-center rounded-full border border-white/10 bg-white/[0.05] text-slate-300 transition hover:bg-white/10 hover:text-white sm:right-6 sm:top-6" aria-label="Fechar artigo">
               <X size={18} />
-            </button>
+            </a>
             <div className="pr-10 sm:pr-12">
               <p className="text-xs font-medium text-cyan-300">{selectedPost.date} <span className="px-1 text-slate-600">·</span> {selectedPost.author}</p>
               <h2 id="article-title" className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl">{selectedPost.title}</h2>
@@ -117,9 +128,9 @@ export default function BlogPage() {
               </ReactMarkdown>
             </article>
             <div className="mt-9 rounded-2xl border border-violet-200/10 bg-gradient-to-br from-violet-500/[0.12] to-cyan-500/[0.08] p-5 text-center sm:p-7">
-              <h3 className="text-lg font-semibold text-white">Gostou do conteúdo?</h3>
+              <h3 className="text-lg font-semibold text-white">Gostou da jornada?</h3>
               <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-300">Conecte-se com o cosmos ao vivo em nossas observações astronômicas itinerantes.</p>
-              <a href="/#vivencias" onClick={() => setSelectedPost(null)} className="mt-5 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-cyan-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110">Conhecer experiências</a>
+              <a href="/#vivencias" className="mt-5 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-cyan-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110">Conhecer experiências</a>
             </div>
           </section>
         </div>
