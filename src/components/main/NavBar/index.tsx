@@ -14,9 +14,9 @@ export default function NavBar() {
       {/* Container Full Width com padding responsivo para empurrar às bordas */}
       <div className="w-full h-full flex flex-row items-center justify-between px-6 md:px-10 lg:px-16 2xl:px-24">
         
-        {/* ESQUERDA: Logo (flex-1 empurra o restante, justify-start alinha à esquerda) */}
+        {/* ESQUERDA: Logo */}
         <div className="flex-1 flex justify-start">
-          <a href="#home" className="group h-auto w-auto flex flex-row items-center">
+          <a href="/#home" className="group h-auto w-auto flex flex-row items-center">
             <img
               src={LOGO_NAV_BAR}
               alt="Logo NavBar"
@@ -27,22 +27,29 @@ export default function NavBar() {
           </a>
         </div>
 
-        {/* CENTRO: Menu Desktop (flex-none mantém o tamanho exato e fica centralizado) */}
+        {/* CENTRO: Menu Desktop */}
         <div className="hidden md:flex flex-none flex-row items-center justify-center">
           <div className="flex items-center justify-center gap-8 h-auto border border-[#7042f861] bg-[#03001490] px-8 py-2.5 rounded-full text-gray-200 shadow-inner shadow-[#7042f820]">
             {NavBarItens.map((item) => (
               <a
                 key={item.id}
-                href={`#${item.id}`}
+                href={`/#${item.id}`}
                 className="font-medium text-sm lg:text-base cursor-pointer transition-colors duration-200 hover:text-cyan-300"
               >
                 {item.name}
               </a>
             ))}
+            
+          <a
+            href="/blog"
+            className="font-medium text-sm lg:text-base cursor-pointer transition-colors duration-200 hover:text-cyan-300"
+          >
+            Blog
+          </a>
           </div>
         </div>
 
-        {/* DIREITA: Social Icon & Menu Mobile (flex-1 e justify-end jogam tudo para a ponta direita) */}
+        {/* DIREITA: Social Icon & Menu Mobile */}
         <div className="flex-1 flex justify-end items-center">
           
           {/* Desktop Social Icon */}
@@ -85,13 +92,19 @@ export default function NavBar() {
             {NavBarItens.map((item) => (
               <a
                 key={item.id}
-                href={`#${item.id}`}
+                href={`/#${item.id}`}
                 onClick={closeMenu}
                 className="text-gray-200 text-2xl font-medium hover:text-cyan-400 transition-colors duration-300"
               >
                 {item.name}
               </a>
             ))}
+          <a
+            href="/blog"
+            className="font-medium text-sm lg:text-base cursor-pointer transition-colors duration-200 hover:text-cyan-300"
+          >
+            Blog
+          </a>
 
             <div className="w-12 h-[1px] bg-[#7042f861] my-2" />
 
@@ -104,7 +117,7 @@ export default function NavBar() {
               onClick={closeMenu}
             >
               <Instagram size={22} />
-              <span>Instagram</span>
+            <span>Instagram</span>
             </a>
           </motion.div>
         )}

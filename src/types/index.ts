@@ -20,6 +20,20 @@ import {
 // 1. DEFINIÇÃO DAS TIPAGENS
 // ==========================================
 
+
+export interface BlogPost {
+  slug: string;
+  title: string;
+  date: string;
+  author: string;
+  description: string;
+  image: string;
+  tags: string[];
+  content: string;
+}
+
+
+
 export interface NavBarItem {
   name: string;
   id: string;
