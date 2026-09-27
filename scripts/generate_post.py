@@ -253,12 +253,17 @@ def generate_blog_post(topic):
     """
 
     # Use current GenerateContent model IDs; Gemini 1.5 Flash is no longer available.
-    models_to_try = ["gemini-3.8-flash", "gemini-3.5-flash"]
+    models_to_try = [
+        "gemini-3.8-flash",
+        "gemini-3.5-flash",
+        "gemini-3.5-flash-lite",
+        "gemini-3.1-flash-lite",
+    ]
     errors = []
 
     for model_name in models_to_try:
-        max_retries = 2
-        delay = 5
+        max_retries = 3
+        initial_delay = 4
         for attempt in range(max_retries):
             try:
                 print(f"Tentando gerar com o modelo {model_name} (Tentativa {attempt + 1})...")
@@ -274,12 +279,15 @@ def generate_blog_post(topic):
 
                 return json.loads(raw_text.strip())
 
-            except ServerError:
+            except ServerError as e:
+                print(f"Erro temporário do servidor com {model_name}: {e}")
                 if attempt < max_retries - 1:
-                    time.sleep(delay)
+                    wait_seconds = initial_delay * (2 ** attempt) + random.uniform(0, 2)
+                    print(f"Tentando novamente em {wait_seconds:.1f}s...")
+                    time.sleep(wait_seconds)
                 else:
-                    print(f"Modelo {model_name} indisponível. Tentando próximo modelo...")
-                    errors.append(f"{model_name}: erro temporário do servidor após {max_retries} tentativas")
+                    print(f"Modelo {model_name} falhou após {max_retries} tentativas. Tentando próximo modelo...")
+                    errors.append(f"{model_name}: {e}")
                     break
             except Exception as e:
                 print(f"Erro com {model_name}: {e}")
