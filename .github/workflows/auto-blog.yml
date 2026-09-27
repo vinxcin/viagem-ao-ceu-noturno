@@ -37,16 +37,28 @@ jobs:
           client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
           def fetch_latest_astronomy_news():
-              rss_url = "https://www.nasa.gov/rss/dyn/breaking_news.rss"
-              feed = feedparser.parse(rss_url)
-              if not feed.entries:
-                  raise Exception("Nenhuma notícia encontrada no feed RSS.")
-              latest = feed.entries[0]
-              return {
-                  "title": latest.title,
-                  "summary": latest.summary,
-                  "link": latest.link
-              }
+              """Busca notícias priorizando EHT, ESA e NASA"""
+              rss_urls = [
+                  "https://eventhorizontelescope.org/feed", # Fontes oficiais do EHT
+                  "https://www.cfa.harvard.edu/news/feed",  # Smithsonian / EHT News
+                  "https://www.esa.int/rssfeed/Our_Activities/Space_Science", # ESA
+                  "https://www.nasa.gov/rss/dyn/breaking_news.rss" # NASA
+              ]
+              
+              for url in rss_urls:
+                  try:
+                      feed = feedparser.parse(url)
+                      if feed.entries:
+                          latest = feed.entries[0]
+                          return {
+                              "title": latest.title,
+                              "summary": getattr(latest, 'summary', latest.title),
+                              "link": latest.link
+                          }
+                  except Exception:
+                      continue
+                      
+              raise Exception("Nenhuma notícia encontrada em nenhum dos feeds RSS disponíveis.")
 
           def generate_blog_post(news_item):
               prompt = f"""
@@ -63,7 +75,7 @@ jobs:
               2. **Estrutura (Storytelling Cósmico):** 
                  - Título magnético e focado na curiosidade.
                  - Introdução sensorial/ancestral.
-                 - Desenvolvimento científico claro.
+                 - Desenvolvimento científico claro (com ênfase especial se envolver buracos negros, horizonte de eventos, relatividade ou astrofísica de alta precisão).
                  - Conexão filosófica com o nosso lugar entre as estrelas.
                  - Conclusão com um sutil Call to Action (CTA) convidando para conhecer as experiências presenciais do "Viagem ao Céu Noturno".
               3. **Otimização SEO:** Subtítulos (##) e palavras-chave naturais.
@@ -79,7 +91,7 @@ jobs:
                   "author": "Viagem ao Céu Noturno",
                   "description": "Meta-descrição de até 160 caracteres para SEO.",
                   "image": "/images/blog/default-cosmos.jpg",
-                  "tags": ["Astrofísica", "Ciência", "Cosmos"]
+                  "tags": ["Buracos Negros", "EHT", "Astrofísica", "Cosmos"]
                 }},
                 "content": "O texto completo da matéria formatado em Markdown..."
               }}
@@ -137,5 +149,5 @@ jobs:
           git config --global user.name "Agente Viagem ao Céu Noturno"
           git config --global user.email "actions@github.com"
           git add content/blog/
-          git commit -m "🤖 Novo post gerado automaticamente pelo agente Gemini"
+          git commit -m "🤖 Novo post gerado automaticamente pelo agente Gemini (EHT/ESA/NASA)"
           git push
